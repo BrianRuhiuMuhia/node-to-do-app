@@ -1,0 +1,172 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+        background-color: aliceblue;
+        user-select: none;
+        }
+ul{
+width:400px;
+
+}
+ul li{
+    display:flex;
+flex-direction: row;
+justify-content: space-between;
+font-size: 1.2em;
+font-family: Arial, Helvetica, sans-serif;
+font-weight: lighter;
+margin-block:1em;
+}
+.delete{
+    background-color: lime;
+    padding:.5em;
+    border-radius: 10px;
+
+}
+.delete:hover{
+    background-color: red;
+    cursor: pointer;
+}
+span{
+ display:none;   
+}
+    </style>
+</head>
+<body>
+    <form method="post",action="/add">
+        <input type="text" name="value" id="input-box" required>
+        <button type="submit" class="submit">Submit</button>
+    </form>
+    <ul class="item-list">
+ 
+    </ul>
+    
+</body>
+<script>
+    let obj=undefined
+    let deleteBtn=[]
+    let li=undefined
+    let checkBox=undefined
+    let itemId=undefined
+    async function getItems()
+    {
+        const result=await fetch(`/home`,{
+            method:"GET",
+            headers:{
+                "Content-type":"application/json"
+            }
+           
+        })
+        const data=await result.json()
+renderToPage(data)
+obj=data
+return data
+    }
+    function renderToPage(data)
+    {
+data.forEach(function(obj)
+{
+    const list=document.querySelector(".item-list")
+    li=document.createElement("li")
+    const a=document.createElement("a")
+    const span=document.createElement("span")
+    const checkBox=document.createElement("input")
+    checkBox.setAttribute("type","checkbox")
+    checkBox.className="check-box"
+    span.textContent=obj.id
+    a.className="delete"
+    a.textContent="Delete"
+    li.textContent=obj.text
+    list.appendChild(li)
+    li.appendChild(a)
+    li.appendChild(span)
+    li.appendChild(checkBox)
+    deleteBtn=document.querySelectorAll(".delete")
+    
+})
+    }
+    getItems().then(function(obj)
+    {
+
+        deleteBtn.forEach((btn)=>
+    {
+        let value=undefined
+        
+        btn.addEventListener("click",function()
+        {  
+        let element=this.nextSibling
+        value=Number.parseInt(element.textContent)
+        itemId=value
+            fetch(`/${value}`,{
+                method:"DELETE"
+            })
+            window.location.href="/"
+            
+        })
+        
+    })
+    return 
+    }).then(function()
+    
+{
+    checkBox=document.querySelectorAll(".check-box")
+    checkBox.forEach((box,index)=>{
+        box.checked=obj[index].completed
+        console.log(obj)
+        box.addEventListener("click",function()
+        {
+            let element=this.previousSibling.textContent
+            for(let i=0;i<obj.length;i++)
+            {
+                if(obj[i].id==Number.parseInt(element))
+                {
+                    obj[i].completed=box.checked
+                    break
+                }
+            }
+        fetch(`/${obj.id}`,{
+            method:"PUT",
+            headers:{
+                "Content-type":"application/json"
+            },
+            body:JSON.stringify(obj)
+
+        })
+        })
+    })
+})
+  document.querySelector(".submit").addEventListener("click",function(event)
+  {
+    event.preventDefault()
+    const obj={
+            value:document.querySelector("#input-box").value
+        }
+        if(obj.value)
+        {
+                fetch(`/add`,{
+            method:"POST",
+            headers:{
+                "Content-type":"application/json"
+            },
+            body:JSON.stringify(obj)
+        })
+        window.location.href="/"
+        }
+        else{
+            alert("enter text in the input box")
+            return
+        }
+    
+  })
+
+    
+ 
+    </script>
+</html>

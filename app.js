@@ -1,0 +1,17 @@
+const express=require("express")
+const app=express()
+const {route}=require("./routes/mainRoutes.js")
+const dotenv=require("dotenv")
+dotenv.config()
+app.set("view engine","ejs")
+app.use(express.static("public"))
+app.use(express.json())
+app.use(express.urlencoded({extended:false}))
+app.use("/",route)
+app.all("*",function(req,res)
+{
+return res.status(404).render("404-page.ejs")
+})
+app.listen(5000,()=>{
+    console.log(`Server Running on port ${process.env.PORT}`)
+})
