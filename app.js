@@ -1,8 +1,15 @@
 const express=require("express")
 const app=express()
 const {route}=require("./routes/mainRoutes.js")
+const session=require("express-session")
+const passport=require("passport")
 const dotenv=require("dotenv")
 dotenv.config()
+app.use(session({secret:"random",saveUninitialized:false,resave:false,cookie:{
+    maxAge:10000*60*60
+}}))
+app.use(passport.initialize())
+app.use(passport.session())
 app.set("view engine","ejs")
 app.use(express.static("public"))
 app.use(express.json())

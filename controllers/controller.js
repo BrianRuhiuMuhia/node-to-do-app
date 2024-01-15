@@ -1,6 +1,5 @@
 const {db} = require("../database/db.js")
-const {render}=require("ejs")
-const {redirect}=require("ejs")
+
 function homePage(req,res)
 {
     return res.render("index.ejs")
@@ -39,4 +38,8 @@ const {id,completed}=obj
     db.query(`update public.items set completed = $1 where id = $2`,[completed,id])
     return res.status(200).json(req.body)
 }
-module.exports={homePage,homeRoute,deleteRoute,addRoute,updateTask}
+function login(req,res)
+{
+
+}
+module.exports={homePage,homeRoute,deleteRoute,addRoute,updateTask,login}
