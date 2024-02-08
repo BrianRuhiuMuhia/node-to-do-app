@@ -7,4 +7,5 @@ route.post("/add",addRoute)
 route.delete("/:id",deleteRoute)
 route.put("/:id",updateTask)
 route.post("/login",login)
+route.get("/login",loginPage)
 module.exports={route}
